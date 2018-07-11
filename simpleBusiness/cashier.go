@@ -14,8 +14,8 @@ type Cashier struct{
 	Stats *Stats
 }
 
-func NewCashier(timestamp float32, pendingEventSet *PendingEventSet, customerServer *Business, stats *Stats) *Cashier{
-	cpu := &Cashier{ stats.generateEntityId(),
+func NewCashier(timestamp float32, pendingEventSet *PendingEventSet, customerServer *Business, stats *Stats) Cashier{
+	cpu := Cashier{ stats.generateEntityId(),
 		0,
 		0,
 		timestamp,

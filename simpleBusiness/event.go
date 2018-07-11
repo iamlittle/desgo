@@ -19,6 +19,10 @@ type PendingEventSet struct {
 	Stats *Stats
 }
 
+func NewPendingEventSet(stats *Stats) PendingEventSet{
+	return PendingEventSet{make([]Event, 0), make(map[int]int), stats}
+}
+
 func (pes PendingEventSet) Len() int { return len(pes.Events) }
 
 func (pes PendingEventSet) Less(i, j int) bool {
@@ -67,10 +71,4 @@ func (pes *PendingEventSet) nextEvent() Event{
 		pes.Stats.GlobalTime = timestamp
 	}
 	return event
-}
-
-// update modifies the priority and value of an Item in the queue.
-func (pes *PendingEventSet) Update(event Event) {
-	id, _, _ := event.EventInfo()
-	heap.Fix(pes, pes.Indices[id])
 }

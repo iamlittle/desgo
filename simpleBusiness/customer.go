@@ -93,8 +93,8 @@ type CustomerGenerator struct {
 func NewCustomerGenerator(timestamp float32,
 						  pendingEventSet *PendingEventSet,
 	  					  business *Business,
-						  stats *Stats) *CustomerGenerator{
-	customerGen := &CustomerGenerator{ stats.generateEntityId(),
+						  stats *Stats) CustomerGenerator{
+	customerGen := CustomerGenerator{ stats.generateEntityId(),
 		0,
 		timestamp,
 		timestamp,
@@ -110,7 +110,7 @@ func (c *CustomerGenerator) EventInfo() (int, int, float32){
 }
 
 func (c *CustomerGenerator) Transition() bool {
-	customer := NewCustomer(c.Timestamp, c.PendingEventSet, c.Business, c.Stats)
+	customer := NewCustomer(c.Stats.generateEntryTime(), c.PendingEventSet, c.Business, c.Stats)
 	c.PendingEventSet.scheduleEvent(customer)
 	log.Println(fmt.Sprintf("[DEBUG] Customer %d generated at %f", customer.Id, c.Timestamp))
 	return false

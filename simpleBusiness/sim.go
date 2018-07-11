@@ -9,25 +9,28 @@ import (
 )
 
 func main(){
+	// Use the Hashicorp logutils to create level capable logging functionality
 	filter := &logutils.LevelFilter{
 		Levels: []logutils.LogLevel{"DEBUG", "INFO", "WARN", "ERROR"},
 		MinLevel: logutils.LogLevel("DEBUG"),
 		Writer: os.Stderr,
 	}
 	log.SetOutput(filter)
-	var business = &Business{make([]*Cashier, 0), make([]*Customer, 0)}
-	var stats = &Stats{0, 0, 0, 0,
-				0, 0, 0}
-	var pendingEventSet = &PendingEventSet{make([]Event, 0), make(map[int]int), stats}
+
+	var business = NewBusiness()
+	var stats = NewStats()
+	var pendingEventSet = NewPendingEventSet(&stats)
 
 	customerCount := 10
-	cashierCount := 2
+	cashierCount := 1
 	for i:=0; i < customerCount; i++ {
-		pendingEventSet.scheduleEvent(NewCustomerGenerator(float32(i), pendingEventSet, business, stats))
+		customerGenerator := NewCustomerGenerator(float32(i), &pendingEventSet, &business, &stats)
+		pendingEventSet.scheduleEvent(&customerGenerator)
 	}
-	heap.Init(pendingEventSet)
+	heap.Init(&pendingEventSet)
 	for i:=0; i < cashierCount; i++ {
-		business.NotifyCashierAvailable(NewCashier(float32(i), pendingEventSet, business, stats), float32(i))
+		cashier := NewCashier(float32(i), &pendingEventSet, &business, &stats)
+		business.NotifyCashierAvailable(&cashier, float32(i))
 	}
 
 	for len(pendingEventSet.Events) > 0 {
@@ -35,5 +38,7 @@ func main(){
 	}
 
 	log.Println(fmt.Sprintf("[INFO] Business closed at %f", stats.GlobalTime))
+	log.Println(fmt.Sprintf("[INFO] Business closed at %f", stats.GlobalTime))
+
 
 }

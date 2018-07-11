@@ -13,6 +13,10 @@ type Business struct{
 	Customers []*Customer
 }
 
+func NewBusiness() Business{
+	return Business{make([]*Cashier, 0), make([]*Customer, 0)}
+}
+
 func (c *Business) Checkout(customer *Customer, timestamp float32){
 	if len(c.Cashiers) == 0 {
 		log.Println(fmt.Sprintf("[DEBUG] No cashiers available for Customer %d at %f", customer.Id, timestamp))

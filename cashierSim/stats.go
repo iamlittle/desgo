@@ -6,12 +6,12 @@ import (
 	"math"
 )
 
-const randomStdDevServiceTime float64 = 2
-const randomMeanServiceTime float64 = 2
-const randomStdDevShopTime float64 = 5
-const randomMeanShopTime float64 = 8
-const randomStdDevEntryTime float64 = 10
-const randomMeanEntryTime float64 = 30
+const serviceTimeStdDev float64 = 2
+const serviceTimeMean float64 = 2
+const shopTimeVariance float64 = 512
+const shopTimeMean float64 = 8
+const entryTimeVariance float64 = 100
+const entryTimeMean float64 = 30
 
 type Stats struct{
 	EntityCount int
@@ -39,12 +39,12 @@ func (*Stats) generateGaussianRandomNumber(stdDev float64, mean float64) float64
 	return rnd.NormFloat64() * stdDev + mean
 }
 
-func (s *Stats) generateLogNormalRandomNumber(stdDev float64, mean float64) float64{
+func (s *Stats) generateLogNormalRandomNumber(variance float64, mean float64) float64{
 	//ensure the value is positive
 	gaussian :=  math.Abs(s.generateGaussianRandomNumber(1, 0))
 	//ensures the value is between 0 and 1
 	gaussian = gaussian - float64(int(gaussian))
-	return math.Exp(gaussian) * stdDev + mean
+	return math.Exp(s.Mu(variance, mean) + s.Sigma(variance, mean) * gaussian)
 }
 
 func (s *Stats) generateExponentialRandomNumber(stdDev float64, mean float64, rate float64) float64{
@@ -56,15 +56,15 @@ func (s *Stats) generateExponentialRandomNumber(stdDev float64, mean float64, ra
 }
 
 func (s *Stats) generateServiceTime() float64{
-	return math.Abs(s.generateGaussianRandomNumber(randomStdDevServiceTime, randomMeanServiceTime))
+	return math.Abs(s.generateGaussianRandomNumber(serviceTimeStdDev, serviceTimeMean))
 }
 
 func (s *Stats) generateShopTime() float64{
-	return s.generateLogNormalRandomNumber(randomStdDevShopTime, randomMeanShopTime)
+	return s.generateLogNormalRandomNumber(shopTimeVariance, shopTimeMean)
 }
 
 func (s *Stats) generateEntryTime() float64{
-	entryTime := s.generateLogNormalRandomNumber(randomStdDevEntryTime, randomMeanEntryTime)
+	entryTime := s.generateLogNormalRandomNumber(entryTimeVariance, entryTimeMean)
 	if entryTime < s.GlobalTime{
 		entryTime += s.GlobalTime
 	}
@@ -108,11 +108,19 @@ func (s *Stats) Variance (mean float64, values []float64) float64{
 		return 0
 	}else{
 		var variance float64 = 0
-		for _, value := range values { variance += math.Pow( mean - value, 2) }
+		for _, value := range values { variance += math.Pow( value - mean, 2) }
 		return variance
 	}
 }
 
 func (s *Stats) StdDev(mean float64, values []float64) float64{
 	return math.Sqrt(s.Variance(mean, values) / float64(len(values)))
+}
+
+func (s *Stats) Mu(variance float64, mean float64) float64{
+	return math.Log(mean / math.Sqrt(1+variance/math.Pow(mean, 2)))
+}
+
+func (s *Stats) Sigma(variance float64, mean float64) float64{
+	return math.Log(1+variance/math.Pow(mean, 2))
 }

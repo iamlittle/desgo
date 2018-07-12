@@ -7,14 +7,14 @@ import (
 
 type Cashier struct{
 	Id, Index, State int
-	Created, TimeStamp, ServiceTime float32
+	Created, TimeStamp, ServiceTime float64
 	Customer *Customer
 	PendingEventSet *PendingEventSet
 	Business *Business
 	Stats *Stats
 }
 
-func NewCashier(timestamp float32, pendingEventSet *PendingEventSet, customerServer *Business, stats *Stats) Cashier{
+func NewCashier(timestamp float64, pendingEventSet *PendingEventSet, customerServer *Business, stats *Stats) Cashier{
 	cpu := Cashier{ stats.generateEntityId(),
 		0,
 		0,
@@ -29,7 +29,7 @@ func NewCashier(timestamp float32, pendingEventSet *PendingEventSet, customerSer
 	return cpu
 }
 
-func (c *Cashier) EventInfo() (int, int, float32){
+func (c *Cashier) EventInfo() (int, int, float64){
 	return c.Id, c.Index, c.TimeStamp
 }
 
@@ -41,7 +41,7 @@ func (c *Cashier) Transition() bool{
 	return true
 }
 
-func (c *Cashier) BeginService(customer *Customer, timestamp float32){
+func (c *Cashier) BeginService(customer *Customer, timestamp float64){
 	c.Customer = customer
 	log.Println(fmt.Sprintf("[DEBUG] Cashier %d servicing Customer %d at %f", c.Id, customer.Id, timestamp))
 	c.Customer.EndWait(timestamp)

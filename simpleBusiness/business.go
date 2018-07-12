@@ -17,7 +17,7 @@ func NewBusiness() Business{
 	return Business{make([]*Cashier, 0), make([]*Customer, 0)}
 }
 
-func (c *Business) Checkout(customer *Customer, timestamp float32){
+func (c *Business) Checkout(customer *Customer, timestamp float64){
 	if len(c.Cashiers) == 0 {
 		log.Println(fmt.Sprintf("[DEBUG] No cashiers available for Customer %d at %f", customer.Id, timestamp))
 		c.Customers = append(c.Customers, customer)
@@ -28,7 +28,7 @@ func (c *Business) Checkout(customer *Customer, timestamp float32){
 	}
 }
 
-func (c *Business) NotifyCashierAvailable(cashier *Cashier, timestamp float32) {
+func (c *Business) NotifyCashierAvailable(cashier *Cashier, timestamp float64) {
 	cashier.TimeStamp = timestamp
 	if len(c.Customers) == 0 {
 		c.Cashiers = append(c.Cashiers, cashier)

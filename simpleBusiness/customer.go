@@ -17,13 +17,13 @@ import (
 
 type Customer struct {
     Id, Index, State int
-	Created, Timestamp, EnterQueue, Lifespan, WaitTime, ShopTime float32
+	Created, Timestamp, EnterQueue, Lifespan, WaitTime, ShopTime float64
 	PendingEventSet *PendingEventSet
 	Business *Business
 	Stats *Stats
 }
 
-func NewCustomer(timestamp float32,
+func NewCustomer(timestamp float64,
 				pendingEventSet *PendingEventSet,
 				business *Business,
 				stats *Stats) *Customer{
@@ -45,7 +45,7 @@ func NewCustomer(timestamp float32,
 	return customer
 }
 
-func (c *Customer) EventInfo() (int, int, float32){
+func (c *Customer) EventInfo() (int, int, float64){
 	return c.Id, c.Index, c.Timestamp
 }
 
@@ -65,14 +65,14 @@ func (c *Customer) Transition() bool {
 	return true
 }
 
-func (c *Customer) EndWait(timestamp float32){
+func (c *Customer) EndWait(timestamp float64){
 	c.WaitTime = timestamp - c.EnterQueue
 	log.Println(fmt.Sprintf("[DEBUG] Customer %d waited in line for %f", c.Id, c.WaitTime))
 	c.Stats.RecordWaitTime(c.WaitTime)
 	c.State++
 }
 
-func (c *Customer) EndService(timestamp float32){
+func (c *Customer) EndService(timestamp float64){
 	c.Lifespan = timestamp - c.Created
 	log.Println(fmt.Sprintf("[DEBUG] Customer %d was at business for %f", c.Id, c.Lifespan))
 	c.State++
@@ -84,13 +84,13 @@ func (c *Customer) EndService(timestamp float32){
 ************************/
 type CustomerGenerator struct {
 	Id, Index int
-	Created, Timestamp float32
+	Created, Timestamp float64
 	PendingEventSet *PendingEventSet
 	Business *Business
 	Stats *Stats
 }
 
-func NewCustomerGenerator(timestamp float32,
+func NewCustomerGenerator(timestamp float64,
 						  pendingEventSet *PendingEventSet,
 	  					  business *Business,
 						  stats *Stats) CustomerGenerator{
@@ -105,7 +105,7 @@ func NewCustomerGenerator(timestamp float32,
 	return customerGen
 }
 
-func (c *CustomerGenerator) EventInfo() (int, int, float32){
+func (c *CustomerGenerator) EventInfo() (int, int, float64){
 	return c.Id, c.Index, c.Timestamp
 }
 

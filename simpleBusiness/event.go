@@ -9,7 +9,7 @@ import (
 
 type Event interface {
 	//return ID, Index, TimeStamp
-	EventInfo() (int, int, float32)
+	EventInfo() (int, int, float64)
 	Transition() bool
 }
 

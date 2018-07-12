@@ -22,7 +22,7 @@ func main(){
 	var pendingEventSet = NewPendingEventSet(&stats)
 
 	customerCount := 10
-	cashierCount := 1
+	cashierCount := 2
 	for i:=0; i < customerCount; i++ {
 		customerGenerator := NewCustomerGenerator(float32(i), &pendingEventSet, &business, &stats)
 		pendingEventSet.scheduleEvent(&customerGenerator)
@@ -38,7 +38,10 @@ func main(){
 	}
 
 	log.Println(fmt.Sprintf("[INFO] Business closed at %f", stats.GlobalTime))
-	log.Println(fmt.Sprintf("[INFO] Business closed at %f", stats.GlobalTime))
+	log.Println(fmt.Sprintf("[INFO] Mean Idle Time %f", stats.Mean(stats.IdleTimes)))
+	log.Println(fmt.Sprintf("[INFO] Mean Service Time %f", stats.Mean(stats.ServiceTimes)))
+	log.Println(fmt.Sprintf("[INFO] Mean Shop Time %f", stats.Mean(stats.ShopTimes)))
+	log.Println(fmt.Sprintf("[INFO] Mean Wait Time %f", stats.Mean(stats.WaitTimes)))
 
 
 }

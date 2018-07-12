@@ -28,7 +28,7 @@ func NewCustomer(timestamp float32,
 				business *Business,
 				stats *Stats) *Customer{
 	shopTime := stats.generateShopTime()
-	stats.CumulativeShopTime += shopTime
+	stats.RecordShopTime(shopTime)
 	customer := &Customer{ stats.generateEntityId(),
 	    0,
 	    0,

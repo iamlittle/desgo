@@ -19,15 +19,6 @@ type Stats struct{
 	WarmedUp bool
 }
 
-type StatsConfig struct{
-	ServiceTimeVariance float64
-	ServiceTimeMean float64
-	ShopTimeVariance float64
-	ShopTimeMean float64
-	EntryTimeVariance float64
-	EntryTimeMean float64
-}
-
 var source = rand.NewSource(time.Now().Unix())
 
 func NewStats(config *StatsConfig) Stats{

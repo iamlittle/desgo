@@ -46,8 +46,8 @@ func (c *Cashier) BeginService(customer *Customer, timestamp float64){
 	log.Println(fmt.Sprintf("[DEBUG] Cashier %d servicing Customer %d at %f", c.Id, customer.Id, timestamp))
 	c.Customer.EndWait(timestamp)
 	serviceTime := c.Stats.generateServiceTime()
-	c.Stats.RecordServiceTime(serviceTime)
-	c.Stats.RecordIdleTime(timestamp - c.TimeStamp)
+	c.Stats.RecordCashierServiceTime(serviceTime)
+	c.Stats.RecordCashierIdleTime(timestamp - c.TimeStamp)
 	c.TimeStamp = timestamp + c.ServiceTime
 	c.PendingEventSet.scheduleEvent(c)
 }

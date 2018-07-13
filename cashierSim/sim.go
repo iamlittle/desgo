@@ -6,6 +6,7 @@ import (
 	"os"
 	"container/heap"
 	"fmt"
+	"math"
 )
 
 func main(){
@@ -18,11 +19,18 @@ func main(){
 	log.SetOutput(filter)
 
 	var business = NewBusiness()
-	var stats = NewStats()
+	var stats = NewStats(&StatsConfig{
+		math.Pow(2,2),
+		2,
+		math.Pow(5,2),
+		8,
+		math.Pow(10,2),
+		30,
+	})
 	var pendingEventSet = NewPendingEventSet(&stats)
 
 	customerCount := 100
-	cashierCount := 3
+	cashierCount := 2
 	for i:=0; i < customerCount; i++ {
 		customerGenerator := NewCustomerGenerator(float64(i), &pendingEventSet, &business, &stats)
 		pendingEventSet.scheduleEvent(&customerGenerator)
@@ -34,17 +42,24 @@ func main(){
 	}
 
 	for len(pendingEventSet.Events) > 0 {
-		pendingEventSet.nextEvent().Transition()
+		event := pendingEventSet.nextEvent()
+		_, ok := event.(*CustomerGenerator)
+		if !ok && !stats.WarmedUp {
+			stats.WarmedUp = true
+		}
+		event.Transition()
 	}
 
-	shopMean := stats.Mean(stats.ShopTimes)
-	serviceMean := stats.Mean(stats.ServiceTimes)
+	serviceMean := stats.Mean(stats.CashierServiceTimes)
+	shopMean := stats.Mean(stats.CustomerShopTimes)
+	waitMean := stats.Mean(stats.CustomerWaitTimes)
 	log.Println(fmt.Sprintf("[INFO] Business closed at %f", stats.GlobalTime))
-	log.Println(fmt.Sprintf("[INFO] Mean Idle Time %f", stats.Mean(stats.IdleTimes)))
-	log.Println(fmt.Sprintf("[INFO] Mean Service Time %f", stats.Mean(stats.ServiceTimes)))
-	log.Println(fmt.Sprintf("[INFO] StdDev Service Time %f", stats.StdDev(serviceMean, stats.ServiceTimes)))
-	log.Println(fmt.Sprintf("[INFO] Mean Shop Time %f", shopMean))
-	log.Println(fmt.Sprintf("[INFO] StdDev Shop Time %f", stats.StdDev(shopMean, stats.ShopTimes)))
-	log.Println(fmt.Sprintf("[INFO] Mean Wait Time %f", stats.Mean(stats.WaitTimes)))
+	log.Println(fmt.Sprintf("[INFO] Idle Time Mean %f", stats.Mean(stats.CashierIdleTimes)))
+	log.Println(fmt.Sprintf("[INFO] Service Time Mean %f", stats.Mean(stats.CashierServiceTimes)))
+	log.Println(fmt.Sprintf("[INFO] Service Time StdDev %f", stats.StdDev(serviceMean, stats.CashierServiceTimes)))
+	log.Println(fmt.Sprintf("[INFO] Shop Time StdDev %f", stats.StdDev(shopMean, stats.CustomerShopTimes)))
+	log.Println(fmt.Sprintf("[INFO] Shop Time Mean %f", shopMean))
+	log.Println(fmt.Sprintf("[INFO] Wait Time StdDev %f", stats.StdDev(waitMean, stats.CustomerWaitTimes)))
+	log.Println(fmt.Sprintf("[INFO] Wait Time Mean %f", waitMean))
 
 }

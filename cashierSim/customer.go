@@ -28,7 +28,6 @@ func NewCustomer(timestamp float64,
 				business *Business,
 				stats *Stats) *Customer{
 	shopTime := stats.generateShopTime()
-	stats.RecordShopTime(shopTime)
 	customer := &Customer{ stats.generateEntityId(),
 	    0,
 	    0,
@@ -53,6 +52,7 @@ func (c *Customer) Transition() bool {
 	switch c.State {
 	case 0:
 		c.State++
+		c.Stats.RecordCustomerShopTime(c.ShopTime)
 		log.Println(fmt.Sprintf("[DEBUG] Customer %d entered store at %f", c.Id, c.Timestamp))
 		c.Timestamp += c.ShopTime
 		c.PendingEventSet.scheduleEvent(c)
@@ -68,7 +68,7 @@ func (c *Customer) Transition() bool {
 func (c *Customer) EndWait(timestamp float64){
 	c.WaitTime = timestamp - c.EnterQueue
 	log.Println(fmt.Sprintf("[DEBUG] Customer %d waited in line for %f", c.Id, c.WaitTime))
-	c.Stats.RecordWaitTime(c.WaitTime)
+	c.Stats.RecordCustomerWaitTime(c.WaitTime)
 	c.State++
 }
 

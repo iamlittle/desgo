@@ -17,20 +17,21 @@ type Stats struct{
 	CashierServiceTimes []float64
 	StatsConfig *StatsConfig
 	WarmedUp bool
+	Source rand.Source
 }
 
-var source = rand.NewSource(time.Now().Unix())
 
 func NewStats(config *StatsConfig) Stats{
 	return Stats{
 		0, 0, 0, 0,
 		make([]float64, 0), make([]float64, 0),
-		make([]float64, 0),make([]float64, 0), config, false,
+		make([]float64, 0),make([]float64, 0),
+		config, false, rand.NewSource(time.Now().Unix()),
 	}
 }
 
-func (*Stats) generateGaussianRandomNumber(variance float64, mean float64) float64{
-	rnd := rand.New(source)
+func (s *Stats) generateGaussianRandomNumber(variance float64, mean float64) float64{
+	rnd := rand.New(s.Source)
 	return rnd.NormFloat64() * math.Sqrt(variance) + mean
 }
 

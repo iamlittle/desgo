@@ -1,6 +1,6 @@
 kind: Cashier
 metadata:
-  name: cashier_100_1
+  name: cashier_1000_1
 spec:
   statsconfig:
     service_time_variance: 4
@@ -9,15 +9,16 @@ spec:
     shop_time_mean: 8
     entry_time_variance: 100
     entry_time_mean: 30
-  customer_count: 100
+  customer_count: 1000
   cashier_count: 1
+number_of_runs: 10
 output:
-  path: ./output/cashier_100_1.output
+  path: ./output/cashier_1000_1.output
 
 ---
 kind: Cashier
 metadata:
-  name: cashier_100_2
+  name: cashier_1000_2
 spec:
   statsconfig:
     service_time_variance: 4
@@ -26,15 +27,16 @@ spec:
     shop_time_mean: 8
     entry_time_variance: 100
     entry_time_mean: 30
-  customer_count: 100
+  customer_count: 1000
   cashier_count: 2
+number_of_runs: 10
 output:
-  path: ./output/cashier_100_2.output
+  path: ./output/cashier_1000_2.output
 
 ---
 kind: Cashier
 metadata:
-  name: cashier_100_3
+  name: cashier_1000_3
 spec:
   statsconfig:
     service_time_variance: 4
@@ -43,7 +45,97 @@ spec:
     shop_time_mean: 8
     entry_time_variance: 100
     entry_time_mean: 30
-  customer_count: 100
+  customer_count: 1000
   cashier_count: 3
+number_of_runs: 10
 output:
-  path: ./output/cashier_100_3.output
+  path: ./output/cashier_1000_3.output
+
+---
+kind: Cashier
+metadata:
+  name: cashier_1000_4
+spec:
+  statsconfig:
+    service_time_variance: 4
+    service_time_mean: 2
+    shop_time_variance: 25
+    shop_time_mean: 8
+    entry_time_variance: 100
+    entry_time_mean: 30
+  customer_count: 1000
+  cashier_count: 4
+number_of_runs: 10
+output:
+  path: ./output/cashier_1000_4.output
+
+kind: Cashier
+metadata:
+  name: cashier_5000_1
+spec:
+  statsconfig:
+    service_time_variance: 4
+    service_time_mean: 2
+    shop_time_variance: 25
+    shop_time_mean: 8
+    entry_time_variance: 100
+    entry_time_mean: 30
+  customer_count: 5000
+  cashier_count: 1
+number_of_runs: 10
+output:
+  path: ./output/cashier_5000_1.output
+
+---
+kind: Cashier
+metadata:
+  name: cashier_5000_2
+spec:
+  statsconfig:
+    service_time_variance: 4
+    service_time_mean: 2
+    shop_time_variance: 25
+    shop_time_mean: 8
+    entry_time_variance: 100
+    entry_time_mean: 30
+  customer_count: 5000
+  cashier_count: 2
+number_of_runs: 10
+output:
+  path: ./output/cashier_5000_2.output
+
+---
+kind: Cashier
+metadata:
+  name: cashier_5000_3
+spec:
+  statsconfig:
+    service_time_variance: 4
+    service_time_mean: 2
+    shop_time_variance: 25
+    shop_time_mean: 8
+    entry_time_variance: 100
+    entry_time_mean: 30
+  customer_count: 5000
+  cashier_count: 3
+number_of_runs: 10
+output:
+  path: ./output/cashier_5000_3.output
+
+---
+kind: Cashier
+metadata:
+  name: cashier_5000_4
+spec:
+  statsconfig:
+    service_time_variance: 4
+    service_time_mean: 2
+    shop_time_variance: 25
+    shop_time_mean: 8
+    entry_time_variance: 100
+    entry_time_mean: 30
+  customer_count: 5000
+  cashier_count: 4
+number_of_runs: 10
+output:
+  path: ./output/cashier_5000_4.output

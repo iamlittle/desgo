@@ -36,22 +36,20 @@ func RunSim(config SimConfig) *Stats{
 	return &stats
 }
 
-func printResults(results map[SimConfig]*Stats){
-	for sc, stats := range results{
-		log.Println(fmt.Sprintf("[INFO] ------ Begin Simulation  %s ------", sc.Metadata.Name))
-		serviceMean := stats.Mean(stats.CashierServiceTimes)
-		shopMean := stats.Mean(stats.CustomerShopTimes)
-		waitMean := stats.Mean(stats.CustomerWaitTimes)
-		log.Println(fmt.Sprintf("[INFO] Business closed at %f", stats.GlobalTime))
-		log.Println(fmt.Sprintf("[INFO] Idle Time Mean %f", stats.Mean(stats.CashierIdleTimes)))
-		log.Println(fmt.Sprintf("[INFO] Service Time Mean %f", stats.Mean(stats.CashierServiceTimes)))
-		log.Println(fmt.Sprintf("[INFO] Service Time StdDev %f", stats.StdDev(serviceMean, stats.CashierServiceTimes)))
-		log.Println(fmt.Sprintf("[INFO] Shop Time StdDev %f", stats.StdDev(shopMean, stats.CustomerShopTimes)))
-		log.Println(fmt.Sprintf("[INFO] Shop Time Mean %f", shopMean))
-		log.Println(fmt.Sprintf("[INFO] Wait Time StdDev %f", stats.StdDev(waitMean, stats.CustomerWaitTimes)))
-		log.Println(fmt.Sprintf("[INFO] Wait Time Mean %f", waitMean))
-		log.Println(fmt.Sprintf("[INFO] ------ End Simulation %s ------", sc.Metadata.Name))
-	}
+func printResults(index int, simConfig SimConfig, results *Stats){
+	log.Println(fmt.Sprintf("[INFO] ------ Begin Simulation  %s_%d ------", simConfig.Metadata.Name, index))
+	serviceMean := results.Mean(results.CashierServiceTimes)
+	shopMean := results.Mean(results.CustomerShopTimes)
+	waitMean := results.Mean(results.CustomerWaitTimes)
+	log.Println(fmt.Sprintf("[INFO] Business closed at %f", results.GlobalTime))
+	log.Println(fmt.Sprintf("[INFO] Idle Time Mean %f", results.Mean(results.CashierIdleTimes)))
+	log.Println(fmt.Sprintf("[INFO] Service Time Mean %f", results.Mean(results.CashierServiceTimes)))
+	log.Println(fmt.Sprintf("[INFO] Service Time StdDev %f", results.StdDev(serviceMean, results.CashierServiceTimes)))
+	log.Println(fmt.Sprintf("[INFO] Shop Time StdDev %f", results.StdDev(shopMean, results.CustomerShopTimes)))
+	log.Println(fmt.Sprintf("[INFO] Shop Time Mean %f", shopMean))
+	log.Println(fmt.Sprintf("[INFO] Wait Time StdDev %f", results.StdDev(waitMean, results.CustomerWaitTimes)))
+	log.Println(fmt.Sprintf("[INFO] Wait Time Mean %f", waitMean))
+	log.Println(fmt.Sprintf("[INFO] ------ End Simulation %s_%d ------", simConfig.Metadata.Name, index))
 }
 
 func main(){
@@ -67,16 +65,18 @@ func main(){
 	flag.Parse()
 
 	simConfigs := ReadSimConfig(*inputFile)
-	results := make(map[SimConfig]*Stats)
 	var wg sync.WaitGroup
 	for _, simConfig := range simConfigs{
-		wg.Add(1)
-		go func(sc SimConfig){
-			results[sc] = RunSim(sc)
-			WriteResults(sc, results[sc])
-			wg.Done()
-		}(simConfig)
+		simConfig.CleanOutputFile(simConfig)
+		for i:=0; i<simConfig.NumberOfRuns; i++ {
+			wg.Add(1)
+			go func(index int, sc SimConfig) {
+				results := RunSim(sc)
+				simConfig.WriteResults(index, sc, results)
+				printResults(index, sc, results)
+				wg.Done()
+			}(i, simConfig)
+		}
 	}
 	wg.Wait()
-	printResults(results)
 }

@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"container/heap"
+	"sync"
 	"fmt"
 )
 
@@ -34,22 +35,9 @@ func RunSim(config SimConfig) *Stats{
 	return &stats
 }
 
-func main(){
-	// Use the Hashicorp logutils to create level capable logging functionality
-	filter := &logutils.LevelFilter{
-		Levels: []logutils.LogLevel{"DEBUG", "INFO", "WARN", "ERROR"},
-		MinLevel: logutils.LogLevel("INFO"),
-		Writer: os.Stderr,
-	}
-	log.SetOutput(filter)
-
-	simConfigs := ReadSimConfig("./examples/cashier.yaml")
-
-	for _, simConfig := range simConfigs{
-		stats := RunSim(simConfig)
-
-		log.Println(fmt.Sprintf("[INFO] ------ Simulation  %s ------", simConfig.Metadata.Name))
-
+func harvestResults(results map[SimConfig]*Stats){
+	for sc, stats := range results{
+		log.Println(fmt.Sprintf("[INFO] ------ Begin Simulation  %s ------", sc.Metadata.Name))
 		serviceMean := stats.Mean(stats.CashierServiceTimes)
 		shopMean := stats.Mean(stats.CustomerShopTimes)
 		waitMean := stats.Mean(stats.CustomerWaitTimes)
@@ -61,9 +49,31 @@ func main(){
 		log.Println(fmt.Sprintf("[INFO] Shop Time Mean %f", shopMean))
 		log.Println(fmt.Sprintf("[INFO] Wait Time StdDev %f", stats.StdDev(waitMean, stats.CustomerWaitTimes)))
 		log.Println(fmt.Sprintf("[INFO] Wait Time Mean %f", waitMean))
-
-		log.Println("[INFO] ---------- END Simulation ----------")
+		log.Println(fmt.Sprintf("[INFO] ------ End Simulation %s ------", sc.Metadata.Name))
 	}
+}
 
+func main(){
+	// Use the Hashicorp logutils to create level capable logging functionality
+	filter := &logutils.LevelFilter{
+		Levels: []logutils.LogLevel{"DEBUG", "INFO", "WARN", "ERROR"},
+		MinLevel: logutils.LogLevel("INFO"),
+		Writer: os.Stderr,
+	}
+	log.SetOutput(filter)
 
+	simConfigs := ReadSimConfig("./examples/cashier.yaml")
+
+	results := make(map[SimConfig]*Stats)
+	var wg sync.WaitGroup
+	for _, simConfig := range simConfigs{
+		wg.Add(1)
+		go func(sc SimConfig){
+			results[sc] = RunSim(sc)
+			WriteResults(sc, results[sc])
+			wg.Done()
+		}(simConfig)
+	}
+	wg.Wait()
+	harvestResults(results)
 }

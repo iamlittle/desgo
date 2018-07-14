@@ -12,7 +12,7 @@ spec:
   customer_count: 100
   cashier_count: 1
 output:
-  path: cashier_100_1.output.csv
+  path: ./output/cashier_100_1.output
 
 ---
 kind: Cashier
@@ -29,4 +29,21 @@ spec:
   customer_count: 100
   cashier_count: 2
 output:
-  path: cashier_100_2.output.csv
+  path: ./output/cashier_100_2.output
+
+---
+kind: Cashier
+metadata:
+  name: cashier_100_3
+spec:
+  statsconfig:
+    service_time_variance: 4
+    service_time_mean: 2
+    shop_time_variance: 25
+    shop_time_mean: 8
+    entry_time_variance: 100
+    entry_time_mean: 30
+  customer_count: 100
+  cashier_count: 3
+output:
+  path: ./output/cashier_100_3.output

@@ -7,6 +7,7 @@ import (
 	"container/heap"
 	"sync"
 	"fmt"
+	"flag"
 )
 
 func RunSim(config SimConfig) *Stats{
@@ -35,7 +36,7 @@ func RunSim(config SimConfig) *Stats{
 	return &stats
 }
 
-func harvestResults(results map[SimConfig]*Stats){
+func printResults(results map[SimConfig]*Stats){
 	for sc, stats := range results{
 		log.Println(fmt.Sprintf("[INFO] ------ Begin Simulation  %s ------", sc.Metadata.Name))
 		serviceMean := stats.Mean(stats.CashierServiceTimes)
@@ -62,8 +63,10 @@ func main(){
 	}
 	log.SetOutput(filter)
 
-	simConfigs := ReadSimConfig("./examples/cashier.yaml")
+	inputFile := flag.String("input", "", "path to a cashier yaml file")
+	flag.Parse()
 
+	simConfigs := ReadSimConfig(*inputFile)
 	results := make(map[SimConfig]*Stats)
 	var wg sync.WaitGroup
 	for _, simConfig := range simConfigs{
@@ -75,5 +78,5 @@ func main(){
 		}(simConfig)
 	}
 	wg.Wait()
-	harvestResults(results)
+	printResults(results)
 }

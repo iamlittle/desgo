@@ -38,7 +38,7 @@ type StatsConfig struct {
 	EntryTimeMean float64 `yaml:"entry_time_mean"`
 }
 
-func ReadSimConfig(filename string) []SimConfig {
+func ReadSimConfig(filename string) []*SimConfig {
 	dat, err := ioutil.ReadFile(filename)
 	if err != nil {
 		log.Println(err)
@@ -46,39 +46,40 @@ func ReadSimConfig(filename string) []SimConfig {
 		os.Exit(1)
 	}
 	configs := strings.Split(string(dat), "---")
-	simConfigs := make([]SimConfig, len(configs))
+	simConfigs := make([]*SimConfig, len(configs))
 	for i, config := range configs {
-		simConfig := SimConfig{}
+		simConfig := &SimConfig{}
 		err = yaml.Unmarshal([]byte(config), &simConfig)
 		simConfigs[i] = simConfig
 	}
 	return simConfigs
 }
 
-func (*SimConfig) CleanOutputFile(sc SimConfig){
-	_ = os.Remove(sc.Output.Path)
+func (s *SimConfig) CleanOutputFile(){
+	_ = os.Remove(s.Output.Path)
 }
 
-func (s *SimConfig) WriteResults(runIndex int, sc SimConfig, stats *Stats){
+func (s *SimConfig) WriteResults(runIndex int, stats *Stats){
 	s.Lock()
-	_ = os.Mkdir(path.Dir(sc.Output.Path), 0755)
+	defer s.Unlock()
+	_ = os.Mkdir(path.Dir(s.Output.Path), 0755)
 
-	f, _ := os.OpenFile(sc.Output.Path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	f, _ := os.OpenFile(s.Output.Path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	defer f.Close()
 	//only write the input / configuration section once
 	if runIndex == 0{
-		f.WriteString(fmt.Sprintf("SIM_NAME\t%s\n", sc.Metadata.Name))
-		f.WriteString(fmt.Sprintf("SIM_KIND\t%s\n", sc.Kind))
-		f.WriteString(fmt.Sprintf("SIM_NUMBER_OF_RUNS\t%d\n", sc.NumberOfRuns))
-		f.WriteString(fmt.Sprintf("INP_CASHIER_COUNT\t%d\n", sc.Spec.CashierCount))
-		f.WriteString(fmt.Sprintf("INP_CASHIER_COUNT\t%d\n", sc.Spec.CashierCount))
-		f.WriteString(fmt.Sprintf("INP_CUSTOMER_COUNT\t%d\n", sc.Spec.CustomerCount))
-		f.WriteString(fmt.Sprintf("INP_ENTRY_TIME_STD_DEV\t%f\n", sc.Spec.EntryTimeStdDev))
-		f.WriteString(fmt.Sprintf("INP_ENTRY_TIME_MEAN\t%f\n", sc.Spec.EntryTimeMean))
-		f.WriteString(fmt.Sprintf("INP_SHOP_TIME_STD_DEV\t%f\n", sc.Spec.ShopTimeStdDev))
-		f.WriteString(fmt.Sprintf("INP_SHOP_TIME_MEAN\t%f\n", sc.Spec.ShopTimeMean))
-		f.WriteString(fmt.Sprintf("INP_SERVICE_TIME_STD_DEV\t%f\n", sc.Spec.ServiceTimeStdDev))
-		f.WriteString(fmt.Sprintf("INP_SERVICE_TIME_MEAN\t%f\n", sc.Spec.ServiceTimeMean))
+		f.WriteString(fmt.Sprintf("SIM_NAME\t%s\n", s.Metadata.Name))
+		f.WriteString(fmt.Sprintf("SIM_KIND\t%s\n", s.Kind))
+		f.WriteString(fmt.Sprintf("SIM_NUMBER_OF_RUNS\t%d\n", s.NumberOfRuns))
+		f.WriteString(fmt.Sprintf("INP_CASHIER_COUNT\t%d\n", s.Spec.CashierCount))
+		f.WriteString(fmt.Sprintf("INP_CASHIER_COUNT\t%d\n", s.Spec.CashierCount))
+		f.WriteString(fmt.Sprintf("INP_CUSTOMER_COUNT\t%d\n", s.Spec.CustomerCount))
+		f.WriteString(fmt.Sprintf("INP_ENTRY_TIME_STD_DEV\t%f\n", s.Spec.EntryTimeStdDev))
+		f.WriteString(fmt.Sprintf("INP_ENTRY_TIME_MEAN\t%f\n", s.Spec.EntryTimeMean))
+		f.WriteString(fmt.Sprintf("INP_SHOP_TIME_STD_DEV\t%f\n", s.Spec.ShopTimeStdDev))
+		f.WriteString(fmt.Sprintf("INP_SHOP_TIME_MEAN\t%f\n", s.Spec.ShopTimeMean))
+		f.WriteString(fmt.Sprintf("INP_SERVICE_TIME_STD_DEV\t%f\n", s.Spec.ServiceTimeStdDev))
+		f.WriteString(fmt.Sprintf("INP_SERVICE_TIME_MEAN\t%f\n", s.Spec.ServiceTimeMean))
 		f.WriteString("\n")
 	}
 
@@ -91,7 +92,6 @@ func (s *SimConfig) WriteResults(runIndex int, sc SimConfig, stats *Stats){
 	writeFloatSlice(f,fmt.Sprintf("OUT_CASHIER_SERVICE_TIMES_%d", runIndex), stats.CashierServiceTimes)
 	f.WriteString("\n")
 	f.Sync()
-	s.Unlock()
 }
 
 func writeFloatSlice (f *os.File, fieldName string, values []float64){

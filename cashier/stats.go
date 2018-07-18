@@ -27,7 +27,7 @@ func NewStats(config *StatsConfig) Stats{
 		0, 0, 0, 0,
 		make([]float64, 0), make([]float64, 0),
 		make([]float64, 0),make([]float64, 0),make([]float64, 0),
-		config, false, rand.NewSource(time.Now().Unix()),
+		config, false, rand.NewSource(time.Now().UnixNano()),
 	}
 }
 

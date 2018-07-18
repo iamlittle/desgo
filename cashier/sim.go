@@ -10,7 +10,7 @@ import (
 	"flag"
 )
 
-func RunSim(config SimConfig) *Stats{
+func RunSim(config *SimConfig) *Stats{
 	var business = NewBusiness()
 	var stats = NewStats(&config.Spec.StatsConfig)
 	var pendingEventSet = NewPendingEventSet(&stats)
@@ -36,7 +36,7 @@ func RunSim(config SimConfig) *Stats{
 	return &stats
 }
 
-func printResults(index int, simConfig SimConfig, results *Stats){
+func printResults(index int, simConfig *SimConfig, results *Stats){
 	log.Println(fmt.Sprintf("[INFO] ------ Begin Simulation  %s_%d ------", simConfig.Metadata.Name, index))
 	serviceMean := results.Mean(results.CashierServiceTimes)
 	shopMean := results.Mean(results.CustomerShopTimes)
@@ -70,12 +70,12 @@ func main(){
 	simConfigs := ReadSimConfig(*inputFile)
 	var wg sync.WaitGroup
 	for _, simConfig := range simConfigs{
-		simConfig.CleanOutputFile(simConfig)
+		simConfig.CleanOutputFile()
 		for i:=0; i<simConfig.NumberOfRuns; i++ {
 			wg.Add(1)
-			go func(index int, sc SimConfig) {
+			go func(index int, sc *SimConfig) {
 				results := RunSim(sc)
-				simConfig.WriteResults(index, sc, results)
+				sc.WriteResults(index, results)
 				printResults(index, sc, results)
 				wg.Done()
 			}(i, simConfig)

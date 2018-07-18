@@ -16,7 +16,7 @@ func RunSim(config SimConfig) *Stats{
 	var pendingEventSet = NewPendingEventSet(&stats)
 
 	for i:=0; i < config.Spec.CustomerCount; i++ {
-		customerGenerator := NewCustomerGenerator(float64(i), &pendingEventSet, &business, &stats)
+		customerGenerator := NewCustomerGenerator(1, &pendingEventSet, &business, &stats)
 		pendingEventSet.scheduleEvent(&customerGenerator)
 	}
 	heap.Init(&pendingEventSet)
@@ -41,6 +41,7 @@ func printResults(index int, simConfig SimConfig, results *Stats){
 	serviceMean := results.Mean(results.CashierServiceTimes)
 	shopMean := results.Mean(results.CustomerShopTimes)
 	waitMean := results.Mean(results.CustomerWaitTimes)
+	entryMean := results.Mean(results.CustomerEntryTimes)
 	log.Println(fmt.Sprintf("[INFO] Business closed at %f", results.GlobalTime))
 	log.Println(fmt.Sprintf("[INFO] Idle Time Mean %f", results.Mean(results.CashierIdleTimes)))
 	log.Println(fmt.Sprintf("[INFO] Service Time Mean %f", results.Mean(results.CashierServiceTimes)))
@@ -49,6 +50,8 @@ func printResults(index int, simConfig SimConfig, results *Stats){
 	log.Println(fmt.Sprintf("[INFO] Shop Time Mean %f", shopMean))
 	log.Println(fmt.Sprintf("[INFO] Wait Time StdDev %f", results.StdDev(waitMean, results.CustomerWaitTimes)))
 	log.Println(fmt.Sprintf("[INFO] Wait Time Mean %f", waitMean))
+	log.Println(fmt.Sprintf("[INFO] Entry Time StdDev %f", results.StdDev(entryMean, results.CustomerEntryTimes)))
+	log.Println(fmt.Sprintf("[INFO] Entry Time Mean %f", entryMean))
 	log.Println(fmt.Sprintf("[INFO] ------ End Simulation %s_%d ------", simConfig.Metadata.Name, index))
 }
 

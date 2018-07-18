@@ -30,11 +30,11 @@ type SimConfig struct {
 }
 
 type StatsConfig struct {
-	ServiceTimeVariance float64 `yaml:"service_time_variance"`
+	ServiceTimeStdDev float64 `yaml:"service_time_std_dev"`
 	ServiceTimeMean float64 `yaml:"service_time_mean"`
-	ShopTimeVariance float64 `yaml:"shop_time_variance"`
+	ShopTimeStdDev float64 `yaml:"shop_time_std_dev"`
 	ShopTimeMean float64 `yaml:"shop_time_mean"`
-	EntryTimeVariance float64 `yaml:"entry_time_variance"`
+	EntryTimeStdDev float64 `yaml:"entry_time_std_dev"`
 	EntryTimeMean float64 `yaml:"entry_time_mean"`
 }
 
@@ -73,11 +73,11 @@ func (s *SimConfig) WriteResults(runIndex int, sc SimConfig, stats *Stats){
 		f.WriteString(fmt.Sprintf("INP_CASHIER_COUNT\t%d\n", sc.Spec.CashierCount))
 		f.WriteString(fmt.Sprintf("INP_CASHIER_COUNT\t%d\n", sc.Spec.CashierCount))
 		f.WriteString(fmt.Sprintf("INP_CUSTOMER_COUNT\t%d\n", sc.Spec.CustomerCount))
-		f.WriteString(fmt.Sprintf("INP_ENTRY_TIME_VARIANCE\t%f\n", sc.Spec.EntryTimeVariance))
+		f.WriteString(fmt.Sprintf("INP_ENTRY_TIME_STD_DEV\t%f\n", sc.Spec.EntryTimeStdDev))
 		f.WriteString(fmt.Sprintf("INP_ENTRY_TIME_MEAN\t%f\n", sc.Spec.EntryTimeMean))
-		f.WriteString(fmt.Sprintf("INP_SHOP_TIME_VARIANCE\t%f\n", sc.Spec.ShopTimeVariance))
+		f.WriteString(fmt.Sprintf("INP_SHOP_TIME_STD_DEV\t%f\n", sc.Spec.ShopTimeStdDev))
 		f.WriteString(fmt.Sprintf("INP_SHOP_TIME_MEAN\t%f\n", sc.Spec.ShopTimeMean))
-		f.WriteString(fmt.Sprintf("INP_SERVICE_TIME_VARIANCE\t%f\n", sc.Spec.ServiceTimeVariance))
+		f.WriteString(fmt.Sprintf("INP_SERVICE_TIME_STD_DEV\t%f\n", sc.Spec.ServiceTimeStdDev))
 		f.WriteString(fmt.Sprintf("INP_SERVICE_TIME_MEAN\t%f\n", sc.Spec.ServiceTimeMean))
 		f.WriteString("\n")
 	}
@@ -85,6 +85,7 @@ func (s *SimConfig) WriteResults(runIndex int, sc SimConfig, stats *Stats){
 	f.WriteString(fmt.Sprintf("OUT_ENTITY_COUNT_%d\t%d\n", runIndex, stats.EntityCount))
 	f.WriteString(fmt.Sprintf("OUT_TERMINATION_TIME_%d\t%f\n", runIndex, stats.GlobalTime))
 	writeFloatSlice(f,fmt.Sprintf("OUT_CUSTOMER_WAIT_TIMES_%d", runIndex), stats.CustomerWaitTimes)
+	writeFloatSlice(f,fmt.Sprintf("OUT_CUSTOMER_ENTRY_TIMES_%d", runIndex), stats.CustomerEntryTimes)
 	writeFloatSlice(f,fmt.Sprintf("OUT_CUSTOMER_SHOP_TIMES_%d", runIndex), stats.CustomerShopTimes)
 	writeFloatSlice(f,fmt.Sprintf("OUT_CASHIER_IDLE_TIMES_%d", runIndex), stats.CashierIdleTimes)
 	writeFloatSlice(f,fmt.Sprintf("OUT_CASHIER_SERVICE_TIMES_%d", runIndex), stats.CashierServiceTimes)

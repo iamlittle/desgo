@@ -15,6 +15,7 @@ type Stats struct{
 	CustomerWaitTimes []float64
 	CashierIdleTimes []float64
 	CashierServiceTimes []float64
+	CustomerEntryTimes []float64
 	StatsConfig *StatsConfig
 	WarmedUp bool
 	Source rand.Source
@@ -25,42 +26,42 @@ func NewStats(config *StatsConfig) Stats{
 	return Stats{
 		0, 0, 0, 0,
 		make([]float64, 0), make([]float64, 0),
-		make([]float64, 0),make([]float64, 0),
+		make([]float64, 0),make([]float64, 0),make([]float64, 0),
 		config, false, rand.NewSource(time.Now().Unix()),
 	}
 }
 
-func (s *Stats) generateGaussianRandomNumber(variance float64, mean float64) float64{
+func (s *Stats) generateGaussianRandomNumber(stdDev float64, mean float64) float64{
 	rnd := rand.New(s.Source)
-	return rnd.NormFloat64() * math.Sqrt(variance) + mean
+	return rnd.NormFloat64() * stdDev + mean
 }
 
-func (s *Stats) generateLogNormalRandomNumber(variance float64, mean float64) float64{
+func (s *Stats) generateLogNormalRandomNumber(stdDev float64, mean float64) float64{
 	//ensure the value is positive
-	gaussian :=  math.Abs(s.generateGaussianRandomNumber(1, 0))
-	//ensures the value is between 0 and 1
-	gaussian = gaussian - float64(int(gaussian))
-	return math.Exp(s.Mu(variance, mean) + s.Sigma(variance, mean) * gaussian)
+	mu := s.Mu(math.Pow(stdDev, 2), mean)
+	sigma := s.Sigma(math.Pow(stdDev, 2), mean)
+	gaussian :=  math.Abs(s.generateGaussianRandomNumber(sigma, mu))
+	return math.Exp(gaussian)
 }
 
-func (s *Stats) generateExponentialRandomNumber(variance float64, mean float64, rate float64) float64{
+func (s *Stats) generateExponentialRandomNumber(stdDev float64, mean float64, rate float64) float64{
 	gaussian := math.Abs(s.generateGaussianRandomNumber(1, 0))
 	//ensures the value is between 0 and 1
 	gaussian = gaussian - float64(int(gaussian))
 	exponential :=  math.Log(1-gaussian) / -rate
-	return exponential * math.Sqrt(variance) + mean
+	return exponential * stdDev + mean
 }
 
 func (s *Stats) generateServiceTime() float64{
-	return math.Abs(s.generateGaussianRandomNumber(s.StatsConfig.ServiceTimeVariance, s.StatsConfig.ServiceTimeMean))
+	return math.Abs(s.generateGaussianRandomNumber(s.StatsConfig.ServiceTimeStdDev, s.StatsConfig.ServiceTimeMean))
 }
 
 func (s *Stats) generateShopTime() float64{
-	return s.generateLogNormalRandomNumber(s.StatsConfig.ShopTimeVariance, s.StatsConfig.ShopTimeMean)
+	return s.generateLogNormalRandomNumber(s.StatsConfig.ShopTimeStdDev, s.StatsConfig.ShopTimeMean)
 }
 
 func (s *Stats) generateEntryTime() float64{
-	entryTime := s.generateLogNormalRandomNumber(s.StatsConfig.EntryTimeVariance, s.StatsConfig.EntryTimeMean)
+	entryTime := s.generateLogNormalRandomNumber(s.StatsConfig.EntryTimeStdDev, s.StatsConfig.EntryTimeMean)
 	if entryTime < s.GlobalTime{
 		entryTime += s.GlobalTime
 	}
@@ -97,6 +98,12 @@ func (s *Stats) RecordCustomerWaitTime(waitTime float64) {
 	}
 }
 
+func (s *Stats) RecordCustomerEntryTime(waitTime float64) {
+	if s.WarmedUp{
+		s.CustomerEntryTimes = append(s.CustomerEntryTimes, waitTime)
+	}
+}
+
 func (s *Stats) Mean(values []float64) float64{
 	if len(values) == 0 {
 		return 0
@@ -122,9 +129,9 @@ func (s *Stats) StdDev(mean float64, values []float64) float64{
 }
 
 func (s *Stats) Mu(variance float64, mean float64) float64{
-	return math.Log(mean / math.Sqrt(1+math.Pow(variance, 2)/math.Pow(mean, 2)))
+	return math.Log(math.Pow(mean, 2) / math.Sqrt(variance + math.Pow(mean, 2)))
 }
 
 func (s *Stats) Sigma(variance float64, mean float64) float64{
-	return math.Log(1+math.Pow(variance, 2)/math.Pow(mean, 2))
+	return math.Sqrt(math.Log(1+variance/math.Pow(mean, 2)))
 }

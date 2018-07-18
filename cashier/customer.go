@@ -52,6 +52,7 @@ func (c *Customer) Transition() bool {
 	switch c.State {
 	case 0:
 		c.State++
+		c.Stats.RecordCustomerEntryTime(c.Timestamp)
 		c.Stats.RecordCustomerShopTime(c.ShopTime)
 		log.Println(fmt.Sprintf("[DEBUG] Customer %d entered store at %f", c.Id, c.Timestamp))
 		c.Timestamp += c.ShopTime

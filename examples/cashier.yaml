@@ -38,25 +38,6 @@ output:
 
 kind: Cashier
 metadata:
-  name: cashier_1000_20
-spec:
-  statsconfig:
-    service_time_std_dev: 2
-    service_time_mean: 4
-    shop_time_std_dev: 8
-    shop_time_mean: 10
-    entry_time_std_dev: 60
-    entry_time_mean: 120
-  customer_count: 1000
-  cashier_count: 20
-number_of_runs: 10
-output:
-  path: ./output/cashier_1000_20.output
-
----
-
-kind: Cashier
-metadata:
   name: cashier_1000_22
 spec:
   statsconfig:
@@ -90,3 +71,22 @@ spec:
 number_of_runs: 10
 output:
   path: ./output/cashier_1000_24.output
+  ---
+
+kind: Cashier
+metadata:
+  name: cashier_1000_26
+spec:
+  statsconfig:
+    service_time_std_dev: 2
+    service_time_mean: 4
+    shop_time_std_dev: 8
+    shop_time_mean: 10
+    entry_time_std_dev: 60
+    entry_time_mean: 120
+  customer_count: 1000
+  cashier_count: 26
+number_of_runs: 10
+output:
+  path: ./output/cashier_1000_26.output
+

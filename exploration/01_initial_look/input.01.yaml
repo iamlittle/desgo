@@ -1,0 +1,149 @@
+
+kind: Cashier
+metadata:
+  name: cashier_1000_10
+spec:
+  statsconfig:
+    service_time_std_dev: 2
+    service_time_mean: 3
+    shop_time_std_dev: 8
+    shop_time_mean: 15
+    entry_time_std_dev: 60
+    entry_time_mean: 120
+  customer_count: 1000
+  cashier_count: 10
+number_of_runs: 10
+output:
+  path: ./exploration/01_initial_look/output/cashier_1000_10.output
+
+---
+
+kind: Cashier
+metadata:
+  name: cashier_1000_11
+spec:
+  statsconfig:
+    service_time_std_dev: 2
+    service_time_mean: 3
+    shop_time_std_dev: 8
+    shop_time_mean: 15
+    entry_time_std_dev: 60
+    entry_time_mean: 120
+  customer_count: 1000
+  cashier_count: 11
+number_of_runs: 10
+output:
+  path: ./exploration/01_initial_look/output/cashier_1000_11.output
+---
+
+kind: Cashier
+metadata:
+  name: cashier_1000_12
+spec:
+  statsconfig:
+    service_time_std_dev: 2
+    service_time_mean: 3
+    shop_time_std_dev: 8
+    shop_time_mean: 15
+    entry_time_std_dev: 60
+    entry_time_mean: 120
+  customer_count: 1000
+  cashier_count: 12
+number_of_runs: 10
+output:
+  path: ./exploration/01_initial_look/output/cashier_1000_12.output
+
+---
+
+kind: Cashier
+metadata:
+  name: cashier_1000_13
+spec:
+  statsconfig:
+    service_time_std_dev: 2
+    service_time_mean: 3
+    shop_time_std_dev: 8
+    shop_time_mean: 15
+    entry_time_std_dev: 60
+    entry_time_mean: 120
+  customer_count: 1000
+  cashier_count: 13
+number_of_runs: 10
+output:
+  path: ./exploration/01_initial_look/output/cashier_1000_13.output
+
+---
+
+kind: Cashier
+metadata:
+  name: cashier_1000_14
+spec:
+  statsconfig:
+    service_time_std_dev: 2
+    service_time_mean: 3
+    shop_time_std_dev: 8
+    shop_time_mean: 15
+    entry_time_std_dev: 60
+    entry_time_mean: 120
+  customer_count: 1000
+  cashier_count: 14
+number_of_runs: 10
+output:
+  path: ./exploration/01_initial_look/output/cashier_1000_14.output
+
+---
+
+kind: Cashier
+metadata:
+  name: cashier_1000_15
+spec:
+  statsconfig:
+    service_time_std_dev: 2
+    service_time_mean: 3
+    shop_time_std_dev: 8
+    shop_time_mean: 15
+    entry_time_std_dev: 60
+    entry_time_mean: 120
+  customer_count: 1000
+  cashier_count: 15
+number_of_runs: 10
+output:
+  path: ./exploration/01_initial_look/output/cashier_1000_15.output
+
+---
+
+kind: Cashier
+metadata:
+  name: cashier_1000_16
+spec:
+  statsconfig:
+    service_time_std_dev: 2
+    service_time_mean: 3
+    shop_time_std_dev: 8
+    shop_time_mean: 15
+    entry_time_std_dev: 60
+    entry_time_mean: 120
+  customer_count: 1000
+  cashier_count: 16
+number_of_runs: 10
+output:
+  path: ./exploration/01_initial_look/output/cashier_1000_16.output
+
+---
+
+kind: Cashier
+metadata:
+  name: cashier_1000_17
+spec:
+  statsconfig:
+    service_time_std_dev: 2
+    service_time_mean: 3
+    shop_time_std_dev: 8
+    shop_time_mean: 15
+    entry_time_std_dev: 60
+    entry_time_mean: 120
+  customer_count: 1000
+  cashier_count: 17
+number_of_runs: 10
+output:
+  path: ./exploration/01_initial_look/output/cashier_1000_17.output

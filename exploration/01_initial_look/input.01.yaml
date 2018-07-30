@@ -7,7 +7,7 @@ spec:
     service_time_std_dev: 2
     service_time_mean: 3
     shop_time_std_dev: 8
-    shop_time_mean: 15
+    shop_time_mean: 10
     entry_time_std_dev: 60
     entry_time_mean: 120
   customer_count: 1000
@@ -26,7 +26,7 @@ spec:
     service_time_std_dev: 2
     service_time_mean: 3
     shop_time_std_dev: 8
-    shop_time_mean: 15
+    shop_time_mean: 10
     entry_time_std_dev: 60
     entry_time_mean: 120
   customer_count: 1000
@@ -44,7 +44,7 @@ spec:
     service_time_std_dev: 2
     service_time_mean: 3
     shop_time_std_dev: 8
-    shop_time_mean: 15
+    shop_time_mean: 10
     entry_time_std_dev: 60
     entry_time_mean: 120
   customer_count: 1000
@@ -63,7 +63,7 @@ spec:
     service_time_std_dev: 2
     service_time_mean: 3
     shop_time_std_dev: 8
-    shop_time_mean: 15
+    shop_time_mean: 10
     entry_time_std_dev: 60
     entry_time_mean: 120
   customer_count: 1000
@@ -82,7 +82,7 @@ spec:
     service_time_std_dev: 2
     service_time_mean: 3
     shop_time_std_dev: 8
-    shop_time_mean: 15
+    shop_time_mean: 10
     entry_time_std_dev: 60
     entry_time_mean: 120
   customer_count: 1000
@@ -101,7 +101,7 @@ spec:
     service_time_std_dev: 2
     service_time_mean: 3
     shop_time_std_dev: 8
-    shop_time_mean: 15
+    shop_time_mean: 10
     entry_time_std_dev: 60
     entry_time_mean: 120
   customer_count: 1000
@@ -120,7 +120,7 @@ spec:
     service_time_std_dev: 2
     service_time_mean: 3
     shop_time_std_dev: 8
-    shop_time_mean: 15
+    shop_time_mean: 10
     entry_time_std_dev: 60
     entry_time_mean: 120
   customer_count: 1000
@@ -139,7 +139,7 @@ spec:
     service_time_std_dev: 2
     service_time_mean: 3
     shop_time_std_dev: 8
-    shop_time_mean: 15
+    shop_time_mean: 10
     entry_time_std_dev: 60
     entry_time_mean: 120
   customer_count: 1000

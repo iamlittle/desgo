@@ -44,20 +44,17 @@ func (s *Stats) generateLogNormalRandomNumber(stdDev float64, mean float64) floa
 	return math.Exp(gaussian)
 }
 
-func (s *Stats) generateExponentialRandomNumber(stdDev float64, mean float64, rate float64) float64{
-	gaussian := math.Abs(s.generateGaussianRandomNumber(1, 0))
-	//ensures the value is between 0 and 1
-	gaussian = gaussian - float64(int(gaussian))
-	exponential :=  math.Log(1-gaussian) / -rate
-	return exponential * stdDev + mean
+func (s *Stats) generateExponentialRandomNumber(stdDev float64, mean float64) float64{
+	rnd := rand.New(s.Source)
+	return rnd.ExpFloat64() * stdDev + (mean - stdDev)
 }
 
 func (s *Stats) generateServiceTime() float64{
-	return math.Abs(s.generateGaussianRandomNumber(s.StatsConfig.ServiceTimeStdDev, s.StatsConfig.ServiceTimeMean))
+	return math.Abs(s.generateExponentialRandomNumber(s.StatsConfig.ServiceTimeStdDev, s.StatsConfig.ServiceTimeMean))
 }
 
 func (s *Stats) generateShopTime() float64{
-	return s.generateLogNormalRandomNumber(s.StatsConfig.ShopTimeStdDev, s.StatsConfig.ShopTimeMean)
+	return s.generateExponentialRandomNumber(s.StatsConfig.ShopTimeStdDev, s.StatsConfig.ShopTimeMean)
 }
 
 func (s *Stats) generateEntryTime() float64{

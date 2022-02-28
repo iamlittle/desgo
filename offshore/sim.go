@@ -74,6 +74,8 @@ func main() {
 	flag.Parse()
 
 	simConfigs := ReadSimConfig(*inputFile)
+
+	log.Print(fmt.Sprintf("[INFO] Loaded configs %d", len(simConfigs)))
 	var wg sync.WaitGroup
 	for _, simConfig := range simConfigs {
 		simConfig.CleanOutputFile()

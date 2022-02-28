@@ -14,7 +14,7 @@ spec:
   cashier_count: 10
 number_of_runs: 10
 output:
-  path: ./exploration/01_initial_look/output/cashier_1000_10.output
+  path: ./exploration/cashier/01_initial_look/output/cashier_1000_10.output
 
 ---
 
@@ -33,7 +33,7 @@ spec:
   cashier_count: 11
 number_of_runs: 10
 output:
-  path: ./exploration/01_initial_look/output/cashier_1000_11.output
+  path: ./exploration/cashier/01_initial_look/output/cashier_1000_11.output
 ---
 
 kind: Cashier
@@ -51,7 +51,7 @@ spec:
   cashier_count: 12
 number_of_runs: 10
 output:
-  path: ./exploration/01_initial_look/output/cashier_1000_12.output
+  path: ./exploration/cashier/01_initial_look/output/cashier_1000_12.output
 
 ---
 
@@ -70,7 +70,7 @@ spec:
   cashier_count: 13
 number_of_runs: 10
 output:
-  path: ./exploration/01_initial_look/output/cashier_1000_13.output
+  path: ./exploration/cashier/01_initial_look/output/cashier_1000_13.output
 
 ---
 
@@ -89,7 +89,7 @@ spec:
   cashier_count: 14
 number_of_runs: 10
 output:
-  path: ./exploration/01_initial_look/output/cashier_1000_14.output
+  path: ./exploration/cashier/01_initial_look/output/cashier_1000_14.output
 
 ---
 
@@ -108,7 +108,7 @@ spec:
   cashier_count: 15
 number_of_runs: 10
 output:
-  path: ./exploration/01_initial_look/output/cashier_1000_15.output
+  path: ./exploration/cashier/01_initial_look/output/cashier_1000_15.output
 
 ---
 
@@ -127,7 +127,7 @@ spec:
   cashier_count: 16
 number_of_runs: 10
 output:
-  path: ./exploration/01_initial_look/output/cashier_1000_16.output
+  path: ./exploration/cashier/01_initial_look/output/cashier_1000_16.output
 
 ---
 
@@ -146,4 +146,4 @@ spec:
   cashier_count: 17
 number_of_runs: 10
 output:
-  path: ./exploration/01_initial_look/output/cashier_1000_17.output
+  path: ./exploration/cashier/01_initial_look/output/cashier_1000_17.output

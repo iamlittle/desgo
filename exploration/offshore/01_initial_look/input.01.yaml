@@ -1,0 +1,31 @@
+
+kind: Offshore
+metadata:
+  name: offshore_scenario_1
+spec:
+  statsconfig:
+    # service_time_std_dev: 2
+    # service_time_mean: 3
+    # shop_time_std_dev: 8
+    # shop_time_mean: 10
+    # entry_time_std_dev: 60
+    # entry_time_mean: 120
+	  code_migrated_std_dev: 2
+	  code_migrated_mean: 3
+	  review_std_dev: 2
+	  review_mean: 3 
+	  convert_std_dev: 2
+	  convert_mean: 3
+	  unit_test_std_dev: 2
+	  unit_test_mean: 3
+	  validate_std_dev: 2
+	  validate_mean: 3
+	  cutover_std_dev: 2
+	  cutover_mean: 3
+  offshore_count: 6
+  onshore_count: 3
+  component_count: 200
+number_of_runs: 1
+output:
+  path: ./exploration/offshore/01_initial_look/output/cashier_1000_10.output
+

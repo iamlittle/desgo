@@ -15,16 +15,16 @@ go build
 
 ```
 cd github.com/iamlittle/desgo/
-cashier/cashier --input ./exploration/01_initial_look/input.01.yaml
+cashier/cashier --input ./exploration/cashier/01_initial_look/input.01.yaml
 ```
 
 ### Configuring a simulation
 
-Each simulation is configured using a yaml file. [Here is an example](./exploration/01_initial_look/input.01.yaml). Here you can configure the number of iterations run, number of customers, cashiers, distribution parameters, etc.
+Each simulation is configured using a yaml file. [Here is an example](./exploration/cashier/01_initial_look/input.01.yaml). Here you can configure the number of iterations run, number of customers, cashiers, distribution parameters, etc.
 
 ### Jupyter Notebooks
 
-See some rudimentary analysis in the exploration steps [Initial Look](./exploration/01_initial_look/01_initial_look.ipynb) and [Multiple Runs](./exploration/02_multiple_runs/02_multiple_runs.ipynb)
+See some rudimentary analysis in the exploration steps [Initial Look](./exploration/cashier/01_initial_look/01_initial_look.ipynb) and [Multiple Runs](./exploration/02_multiple_runs/02_multiple_runs.ipynb)
 
 
  

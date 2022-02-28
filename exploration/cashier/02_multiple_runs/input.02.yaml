@@ -14,7 +14,7 @@ spec:
   cashier_count: 12
 number_of_runs: 90
 output:
-  path: ./exploration/02_multiple_runs/output/cashier_1000_12.output
+  path: ./exploration/cashier/02_multiple_runs/output/cashier_1000_12.output
 
 ---
 kind: Cashier
@@ -32,7 +32,7 @@ spec:
   cashier_count: 13
 number_of_runs: 90
 output:
-  path: ./exploration/02_multiple_runs/output/cashier_1000_13.output
+  path: ./exploration/cashier/02_multiple_runs/output/cashier_1000_13.output
 
 ---
 
@@ -51,7 +51,7 @@ spec:
   cashier_count: 14
 number_of_runs: 90
 output:
-  path: ./exploration/02_multiple_runs/output/cashier_1000_14.output
+  path: ./exploration/cashier/02_multiple_runs/output/cashier_1000_14.output
 
 ---
 
@@ -70,7 +70,7 @@ spec:
   cashier_count: 15
 number_of_runs: 90
 output:
-  path: ./exploration/02_multiple_runs/output/cashier_1000_15.output
+  path: ./exploration/cashier/02_multiple_runs/output/cashier_1000_15.output
 
 ---
 
@@ -89,4 +89,4 @@ spec:
   cashier_count: 16
 number_of_runs: 90
 output:
-  path: ./exploration/02_multiple_runs/output/cashier_1000_16.output
+  path: ./exploration/cashier/02_multiple_runs/output/cashier_1000_16.output

@@ -16,7 +16,11 @@ type Migration struct {
 }
 
 func NewMigration() Migration {
-	return Migration{make([]*Resource, 0), make([]*Resource, 0), make([]*Component, 0), make([]*Component, 0)}
+	return Migration{
+		make([]*Resource, 0),
+		make([]*Resource, 0),
+		make([]*Component, 0),
+		make([]*Component, 0)}
 }
 
 type ResourceType int64
@@ -43,59 +47,73 @@ func (c *Migration) getResourceType(component *Component) ResourceType {
 }
 
 func (c *Migration) Process(component *Component, timestamp float64) {
-	t := c.getResourceType(component)
-	if t == Offshore {
-		if len(c.OffshoreResources) == 0 {
-			log.Println(fmt.Sprintf("[DEBUG] No offshore resources available for Component %d at %f", component.Id, timestamp))
-			c.OffshoreComponents = append(c.OffshoreComponents, component)
+	if component.State == int(CodeMigrated) {
+		component.CodeMigrated = component.CodeMigrateDuration
+		component.Timestamp = timestamp
+		component.Stats.RecordComponentCodeMigrationTime(component)
+		log.Println(fmt.Sprintf("[DEBUG] Component %d code is migrated at %f", component.Id, component.Timestamp))
+
+	} else if component.State == int(DDLAvailable) {
+		if component.DDLAvailable > timestamp {
+			component.Timestamp = component.DDLAvailable
 		} else {
-			resource := c.OffshoreResources[0]
-			c.OffshoreResources = c.OffshoreResources[1:]
-			resource.Process(component, timestamp)
-		}
-	} else if t == Onshore {
-		if len(c.OnshoreResources) == 0 {
-			log.Println(fmt.Sprintf("[DEBUG] No onshore resources available for Component %d at %f", component.Id, timestamp))
-			c.OffshoreComponents = append(c.OffshoreComponents, component)
-		} else {
-			resource := c.OnshoreResources[0]
-			c.OnshoreResources = c.OnshoreResources[1:]
-			resource.Process(component, timestamp)
-		}
-	} else {
-		switch component.State {
-		case 0:
-			component.CodeMigrated = component.CodeMigrateDuration
 			component.Timestamp = timestamp
-		case 3:
-			if component.DDLAvailable > timestamp {
-				component.Timestamp = component.DDLAvailable
+		}
+		log.Println(fmt.Sprintf("[DEBUG] Component %d DDL available at %f, processed at %f", component.Id, component.DDLAvailable, component.Timestamp))
+
+	} else if component.State == int(DataAvailable) {
+		if component.DataAvailable > timestamp {
+			component.Timestamp = component.DataAvailable
+		} else {
+			component.Timestamp = timestamp
+		}
+		log.Println(fmt.Sprintf("[DEBUG] Component %d Data available at %f, processed at %f", component.Id, component.DDLAvailable, component.Timestamp))
+
+	} else {
+		t := c.getResourceType(component)
+		if t == Offshore {
+			if len(c.OffshoreResources) == 0 {
+				log.Println(fmt.Sprintf("[DEBUG] No offshore resources available for Component %d at %f", component.Id, timestamp))
+				c.OffshoreComponents = append(c.OffshoreComponents, component)
+				return
 			} else {
-				component.Timestamp = timestamp
+				resource := c.OffshoreResources[0]
+				c.OffshoreResources = c.OffshoreResources[1:]
+				resource.Process(component, timestamp)
 			}
-		case 5:
-			if component.DataAvailable > timestamp {
-				component.Timestamp = component.DataAvailable
+		} else if t == Onshore {
+			if len(c.OnshoreResources) == 0 {
+				log.Println(fmt.Sprintf("[DEBUG] No onshore resources available for Component %d at %f", component.Id, timestamp))
+				c.OffshoreComponents = append(c.OffshoreComponents, component)
+				return
 			} else {
-				component.Timestamp = timestamp
+				resource := c.OnshoreResources[0]
+				c.OnshoreResources = c.OnshoreResources[1:]
+				resource.Process(component, timestamp)
 			}
 		}
 	}
+	component.State++
+	component.PendingEventSet.scheduleEvent(component)
 }
 
 func (c *Migration) NotifyResourceAvailable(resource *Resource, timestamp float64) {
 	resource.TimeStamp = timestamp
-	if resource.Type == 0 && len(c.OffshoreResources) == 0 {
+	if resource.Type == Offshore && len(c.OffshoreComponents) == 0 {
 		c.OffshoreResources = append(c.OffshoreResources, resource)
-	} else if resource.Type == 0 {
+	} else if resource.Type == Offshore {
 		component := c.OffshoreComponents[0]
 		c.OffshoreComponents = c.OffshoreComponents[1:]
 		resource.Process(component, timestamp)
-	} else if len(c.OnshoreResources) == 0 {
+		component.State++
+		component.PendingEventSet.scheduleEvent(component)
+	} else if len(c.OnshoreComponents) == 0 {
 		c.OnshoreResources = append(c.OnshoreResources, resource)
 	} else {
 		component := c.OnshoreComponents[0]
 		c.OnshoreComponents = c.OnshoreComponents[1:]
 		resource.Process(component, timestamp)
+		component.State++
+		component.PendingEventSet.scheduleEvent(component)
 	}
 }

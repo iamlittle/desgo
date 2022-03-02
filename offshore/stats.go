@@ -17,17 +17,21 @@ type Stats struct {
 	UnitTestTimes     []float64
 	ValidatedTimes    []float64
 	CutoverTimes      []float64
-	StatsConfig       *StatsConfig
+	StatsConfig       map[string]*StatsConfig
 	WarmedUp          bool
 	Source            rand.Source
 }
 
-func NewStats(config *StatsConfig) Stats {
+func NewStats(configs []StatsConfig) Stats {
+	m := make(map[string]*StatsConfig, len(configs))
+	for i := 0; i < len(configs); i++ {
+		m[configs[i].Name] = &configs[i]
+	}
 	return Stats{
 		0, 0, 0, 0,
 		make([]float64, 0), make([]float64, 0), make([]float64, 0),
 		make([]float64, 0), make([]float64, 0), make([]float64, 0),
-		config, false, rand.NewSource(time.Now().UnixNano()),
+		m, false, rand.NewSource(time.Now().UnixNano()),
 	}
 }
 
@@ -49,37 +53,49 @@ func (s *Stats) generateExponentialRandomNumber(stdDev float64, mean float64) fl
 	return rnd.ExpFloat64()*stdDev + (mean - stdDev)
 }
 
-func (s *Stats) generateCodeMigratedDuration() float64 {
-	return math.Abs(s.generateExponentialRandomNumber(s.StatsConfig.CodeMigratedStdDev, s.StatsConfig.CodeMigratedMean))
+func (s *Stats) generateCodeMigratedDuration(componentType ComponentType) float64 {
+	std_dev := s.StatsConfig[string(componentType)].CodeMigratedStdDev
+	mean := s.StatsConfig[string(componentType)].CodeMigratedMean
+	return math.Abs(s.generateExponentialRandomNumber(std_dev, mean))
 }
 
-func (s *Stats) generateReviewDuration() float64 {
-	return s.generateExponentialRandomNumber(s.StatsConfig.ReviewStdDev, s.StatsConfig.ReviewMean)
+func (s *Stats) generateReviewDuration(componentType ComponentType) float64 {
+	std_dev := s.StatsConfig[string(componentType)].ReviewStdDev
+	mean := s.StatsConfig[string(componentType)].ReviewMean
+	return s.generateExponentialRandomNumber(std_dev, mean)
 }
 
-func (s *Stats) generateConvertDuration() float64 {
-	return s.generateExponentialRandomNumber(s.StatsConfig.ConvertStdDev, s.StatsConfig.ConvertMean)
+func (s *Stats) generateConvertDuration(componentType ComponentType) float64 {
+	std_dev := s.StatsConfig[string(componentType)].ConvertStdDev
+	mean := s.StatsConfig[string(componentType)].ConvertMean
+	return s.generateExponentialRandomNumber(std_dev, mean)
 }
 
-func (s *Stats) generateUnitTestDuration() float64 {
-	return s.generateExponentialRandomNumber(s.StatsConfig.UnitTestStdDev, s.StatsConfig.UnitTestMean)
+func (s *Stats) generateUnitTestDuration(componentType ComponentType) float64 {
+	std_dev := s.StatsConfig[string(componentType)].UnitTestStdDev
+	mean := s.StatsConfig[string(componentType)].UnitTestMean
+	return s.generateExponentialRandomNumber(std_dev, mean)
 }
 
-func (s *Stats) generateValidateDuration() float64 {
-	return s.generateExponentialRandomNumber(s.StatsConfig.ValidateStdDev, s.StatsConfig.ValidateMean)
+func (s *Stats) generateValidateDuration(componentType ComponentType) float64 {
+	std_dev := s.StatsConfig[string(componentType)].ValidateStdDev
+	mean := s.StatsConfig[string(componentType)].ValidateMean
+	return s.generateExponentialRandomNumber(std_dev, mean)
 }
 
-func (s *Stats) generateCutoverDuration() float64 {
-	return s.generateExponentialRandomNumber(s.StatsConfig.CutoverStdDev, s.StatsConfig.CutoverMean)
+func (s *Stats) generateCutoverDuration(componentType ComponentType) float64 {
+	std_dev := s.StatsConfig[string(componentType)].CutoverStdDev
+	mean := s.StatsConfig[string(componentType)].CutoverMean
+	return s.generateExponentialRandomNumber(std_dev, mean)
 }
 
-func (s *Stats) generateEntryTime() float64 {
-	entryTime := s.generateLogNormalRandomNumber(s.StatsConfig.CutoverStdDev, s.StatsConfig.CutoverStdDev)
-	if entryTime < s.GlobalTime {
-		entryTime += s.GlobalTime
-	}
-	return entryTime
-}
+// func (s *Stats) generateEntryTime() float64 {
+// 	entryTime := s.generateLogNormalRandomNumber(s.StatsConfig.CutoverStdDev, s.StatsConfig.CutoverStdDev)
+// 	if entryTime < s.GlobalTime {
+// 		entryTime += s.GlobalTime
+// 	}
+// 	return entryTime
+// }
 
 func (s *Stats) generateEntityId() int {
 	id := s.EntityCount
@@ -89,37 +105,37 @@ func (s *Stats) generateEntityId() int {
 
 func (s *Stats) RecordComponentCodeMigrationTime(component *Component) {
 	if s.WarmedUp {
-		s.CodeMigratedTimes = append(s.CodeMigratedTimes, component.CodeMigrated)
+		s.CodeMigratedTimes = append(s.CodeMigratedTimes, component.CodeMigrateDuration)
 	}
 }
 
 func (s *Stats) RecordComponentReviewTime(component *Component) {
 	if s.WarmedUp {
-		s.ReviewTimes = append(s.ReviewTimes, component.Reviewed)
+		s.ReviewTimes = append(s.ReviewTimes, component.ReviewDuration)
 	}
 }
 
 func (s *Stats) RecordComponentRoughConversionTime(component *Component) {
 	if s.WarmedUp {
-		s.ConversionTimes = append(s.ConversionTimes, component.Converted)
+		s.ConversionTimes = append(s.ConversionTimes, component.ConvertDuration)
 	}
 }
 
 func (s *Stats) RecordComponentUnitTestTime(component *Component) {
 	if s.WarmedUp {
-		s.UnitTestTimes = append(s.UnitTestTimes, component.UnitTested)
+		s.UnitTestTimes = append(s.UnitTestTimes, component.UnitTestDuration)
 	}
 }
 
 func (s *Stats) RecordComponentValidateTime(component *Component) {
 	if s.WarmedUp {
-		s.ValidatedTimes = append(s.ValidatedTimes, component.Validated)
+		s.ValidatedTimes = append(s.ValidatedTimes, component.ValidateDuration)
 	}
 }
 
 func (s *Stats) RecordComponentCutoverTime(component *Component) {
 	if s.WarmedUp {
-		s.CutoverTimes = append(s.CutoverTimes, component.Cutover)
+		s.CutoverTimes = append(s.CutoverTimes, component.CutoverDuration)
 	}
 }
 

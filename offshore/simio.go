@@ -20,10 +20,9 @@ type SimConfig struct {
 		Name string
 	} `yaml:"metadata"`
 	Spec struct {
-		StatsConfig
-		OnshoreResourceCount  int `yaml:"onshore_count"`
-		OffshoreResourceCount int `yaml:"offshore_count"`
-		ComponentCount        int `yaml:"component_count"`
+		Configs               []StatsConfig `yaml:"statsconfig"`
+		OnshoreResourceCount  int           `yaml:"onshore_count"`
+		OffshoreResourceCount int           `yaml:"offshore_count"`
 	} `yaml:"spec"`
 	Output struct {
 		Path string `yaml:"path"`
@@ -32,6 +31,7 @@ type SimConfig struct {
 }
 
 type StatsConfig struct {
+	Name               string  `yaml:"name"`
 	CodeMigratedStdDev float64 `yaml:"code_migrated_std_dev"`
 	CodeMigratedMean   float64 `yaml:"code_migrated_mean"`
 	ReviewStdDev       float64 `yaml:"review_std_dev"`
@@ -44,6 +44,7 @@ type StatsConfig struct {
 	ValidateMean       float64 `yaml:"validate_mean"`
 	CutoverStdDev      float64 `yaml:"cutover_std_dev"`
 	CutoverMean        float64 `yaml:"cutover_mean"`
+	ComponentCount     int     `yaml:"component_count"`
 }
 
 func ReadSimConfig(filename string) []*SimConfig {

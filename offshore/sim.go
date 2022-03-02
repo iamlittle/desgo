@@ -13,21 +13,23 @@ import (
 
 func RunSim(config *SimConfig) *Stats {
 	var migration = NewMigration()
-	var stats = NewStats(&config.Spec.StatsConfig)
+	var stats = NewStats(config.Spec.Configs)
 	var pendingEventSet = NewPendingEventSet(&stats)
 
-	for i := 0; i < config.Spec.ComponentCount; i++ {
-		component := NewComponent(float64(i), &pendingEventSet, &migration, &stats)
-		pendingEventSet.scheduleEvent(&component)
+	for componentType, statConfig := range stats.StatsConfig { // Order not specified
+		for i := 0; i < statConfig.ComponentCount; i++ {
+			component := NewComponent(0, ComponentType(componentType), &pendingEventSet, &migration, &stats)
+			pendingEventSet.scheduleEvent(&component)
+		}
 	}
 	heap.Init(&pendingEventSet)
 	for i := 0; i < config.Spec.OnshoreResourceCount; i++ {
-		resource := NewResource(1, Onshore, &pendingEventSet, &migration, &stats)
-		migration.NotifyResourceAvailable(&resource, float64(i))
+		resource := NewResource(0, Onshore, &pendingEventSet, &migration, &stats)
+		migration.NotifyResourceAvailable(&resource, 0)
 	}
 	for i := 0; i < config.Spec.OffshoreResourceCount; i++ {
-		resource := NewResource(1, Offshore, &pendingEventSet, &migration, &stats)
-		migration.NotifyResourceAvailable(&resource, float64(i))
+		resource := NewResource(0, Offshore, &pendingEventSet, &migration, &stats)
+		migration.NotifyResourceAvailable(&resource, 0)
 	}
 	stats.WarmedUp = true
 	for len(pendingEventSet.Events) > 0 {
@@ -65,7 +67,7 @@ func main() {
 	// Use the Hashicorp logutils to create level capable logging functionality
 	filter := &logutils.LevelFilter{
 		Levels:   []logutils.LogLevel{"DEBUG", "INFO", "WARN", "ERROR"},
-		MinLevel: logutils.LogLevel("INFO"),
+		MinLevel: logutils.LogLevel("DEBUG"),
 		Writer:   os.Stderr,
 	}
 	log.SetOutput(filter)
@@ -76,6 +78,7 @@ func main() {
 	simConfigs := ReadSimConfig(*inputFile)
 
 	log.Print(fmt.Sprintf("[INFO] Loaded configs %d", len(simConfigs)))
+	log.Print(fmt.Sprintf("[INFO] Number of Runs %d", simConfigs[0].NumberOfRuns))
 	var wg sync.WaitGroup
 	for _, simConfig := range simConfigs {
 		simConfig.CleanOutputFile()

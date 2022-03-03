@@ -39,7 +39,7 @@ func (c *Resource) EventInfo() (int, int, float64) {
 }
 
 func (c *Resource) Transition() bool {
-	log.Println(fmt.Sprintf("[DEBUG] Resource %d finished with Component %d at %f", c.Id, c.Component.Id, c.TimeStamp))
+	log.Println(fmt.Sprintf("[DEBUG] Resource %d finished with Component %d at %s", c.Id, c.Component.Id, c.formatTime(c.TimeStamp)))
 	c.Component = nil
 	c.Migration.NotifyResourceAvailable(c, c.TimeStamp)
 	return true
@@ -58,7 +58,7 @@ func (c *Resource) Process(component *Component, timestamp float64) {
 		component.Timestamp = component.Reviewed
 		c.TimeStamp = component.Reviewed
 		c.Stats.RecordComponentReviewTime(component)
-		log.Println(fmt.Sprintf("[DEBUG] Component %d artifacts reviewed at %f", component.Id, component.Timestamp))
+		log.Println(fmt.Sprintf("[DEBUG] Component %d artifacts reviewed at %s", component.Id, c.formatTime(component.Timestamp)))
 	case 2:
 		if c.TimeOff {
 			component.Converted = c.calculateDurationIncludingTimeOff(component.ConvertDuration, timestamp)
@@ -68,7 +68,7 @@ func (c *Resource) Process(component *Component, timestamp float64) {
 		component.Timestamp = component.Converted
 		c.TimeStamp = component.Converted
 		c.Stats.RecordComponentRoughConversionTime(component)
-		log.Println(fmt.Sprintf("[DEBUG] Component %d rough conversion %f", component.Id, component.Timestamp))
+		log.Println(fmt.Sprintf("[DEBUG] Component %d rough conversion %s", component.Id, c.formatTime(component.Timestamp)))
 	case 4:
 		if c.TimeOff {
 			component.UnitTested = c.calculateDurationIncludingTimeOff(component.UnitTestDuration, timestamp)
@@ -79,7 +79,7 @@ func (c *Resource) Process(component *Component, timestamp float64) {
 		component.Timestamp = component.UnitTested
 		c.TimeStamp = component.UnitTested
 		c.Stats.RecordComponentUnitTestTime(component)
-		log.Println(fmt.Sprintf("[DEBUG] Component %d unit tested at %f", component.Id, component.Timestamp))
+		log.Println(fmt.Sprintf("[DEBUG] Component %d unit tested at %s", component.Id, c.formatTime(component.Timestamp)))
 	case 6:
 		if c.TimeOff {
 			component.Validated = c.calculateDurationIncludingTimeOff(component.ValidateDuration, timestamp)
@@ -90,7 +90,7 @@ func (c *Resource) Process(component *Component, timestamp float64) {
 		component.Timestamp = component.Validated
 		c.TimeStamp = component.Validated
 		c.Stats.RecordComponentValidateTime(component)
-		log.Println(fmt.Sprintf("[DEBUG] Component %d executed and validated at %f", component.Id, component.Timestamp))
+		log.Println(fmt.Sprintf("[DEBUG] Component %d executed and validated at %s", component.Id, c.formatTime(component.Timestamp)))
 	case 7:
 		if c.TimeOff {
 			component.Cutover = c.calculateDurationIncludingTimeOff(component.CutoverDuration, timestamp)
@@ -101,7 +101,7 @@ func (c *Resource) Process(component *Component, timestamp float64) {
 		component.Timestamp = component.Cutover
 		c.TimeStamp = component.Cutover
 		c.Stats.RecordComponentCutoverTime(component)
-		log.Println(fmt.Sprintf("[DEBUG] Component %d production cutover at %f", component.Id, component.Timestamp))
+		log.Println(fmt.Sprintf("[DEBUG] Component %d production cutover at %s", component.Id, c.formatTime(component.Timestamp)))
 	}
 	c.PendingEventSet.scheduleEvent(c)
 }
@@ -153,4 +153,10 @@ func (c *Resource) calculateDurationIncludingTimeOff(duration float64, timestamp
 
 	// return nextAvaliableWindow + float64(24*daysDuration) + last_leg
 
+}
+
+func (c *Resource) formatTime(timestamp float64) string {
+	day := int(timestamp) / (24)
+	week := int(timestamp) / (24 * 7)
+	return fmt.Sprintf("Time %f, Day %d, Week %d", timestamp, day, week)
 }

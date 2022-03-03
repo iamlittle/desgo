@@ -10,14 +10,28 @@ spec:
       review_std_dev: 0.5
       review_mean: 2 
       convert_std_dev: 4
-      convert_mean: 18
+      convert_mean: 16
       unit_test_std_dev: 4
       unit_test_mean: 12
       validate_std_dev: 6
       validate_mean: 16
       cutover_std_dev: 4
       cutover_mean: 8
-      component_count: 57  
+      component_count: 54  
+    - name: "inline"
+      code_migrated_std_dev: 2
+      code_migrated_mean: 3
+      review_std_dev: 0.5
+      review_mean: 2 
+      convert_std_dev: 4
+      convert_mean: 16
+      unit_test_std_dev: 4
+      unit_test_mean: 12
+      validate_std_dev: 6
+      validate_mean: 16
+      cutover_std_dev: 4
+      cutover_mean: 8
+      component_count: 17  
     - name: "spark"
       code_migrated_std_dev: 2
       code_migrated_mean: 3
@@ -32,27 +46,41 @@ spec:
       cutover_std_dev: 4
       cutover_mean: 8
       component_count: 91  
-    - name: "inline"
+    - name: "autotrain"
       code_migrated_std_dev: 2
       code_migrated_mean: 3
       review_std_dev: 0.5
       review_mean: 2 
       convert_std_dev: 4
-      convert_mean: 18
+      convert_mean: 16
       unit_test_std_dev: 4
       unit_test_mean: 12
       validate_std_dev: 6
       validate_mean: 16
       cutover_std_dev: 4
       cutover_mean: 8
-      component_count: 17  
+      component_count: 13  
+    - name: "realtime"
+      code_migrated_std_dev: 2
+      code_migrated_mean: 3
+      review_std_dev: 0.5
+      review_mean: 2 
+      convert_std_dev: 4
+      convert_mean: 16
+      unit_test_std_dev: 4
+      unit_test_mean: 12
+      validate_std_dev: 6
+      validate_mean: 16
+      cutover_std_dev: 4
+      cutover_mean: 8
+      component_count: 25  
     - name: "etl"
       code_migrated_std_dev: 2
       code_migrated_mean: 3
       review_std_dev: 0.5
       review_mean: 2 
       convert_std_dev: 4
-      convert_mean: 18
+      convert_mean: 16
       unit_test_std_dev: 4
       unit_test_mean: 12
       validate_std_dev: 6
@@ -60,8 +88,36 @@ spec:
       cutover_std_dev: 4
       cutover_mean: 8
       component_count: 27  
+    - name: "workflow_bundles"
+      code_migrated_std_dev: 2
+      code_migrated_mean: 3
+      review_std_dev: 0.5
+      review_mean: 2 
+      convert_std_dev: 4
+      convert_mean: 8
+      unit_test_std_dev: 4
+      unit_test_mean: 12
+      validate_std_dev: 6
+      validate_mean: 16
+      cutover_std_dev: 4
+      cutover_mean: 8
+      component_count: 12  
+    - name: "workflow_framework"
+      code_migrated_std_dev: 2
+      code_migrated_mean: 3
+      review_std_dev: 0.5
+      review_mean: 2 
+      convert_std_dev: 4
+      convert_mean: 16
+      unit_test_std_dev: 4
+      unit_test_mean: 12
+      validate_std_dev: 6
+      validate_mean: 16
+      cutover_std_dev: 4
+      cutover_mean: 8
+      component_count: 11  
   offshore_count: 6
-  onshore_count: 10
+  onshore_count: 13
   time_off: true
 number_of_runs: 1
 output:

@@ -17,7 +17,7 @@ spec:
       validate_mean: 16
       cutover_std_dev: 4
       cutover_mean: 8
-      component_count: 1 #57  
+      component_count: 57  
     - name: "spark"
       code_migrated_std_dev: 2
       code_migrated_mean: 3
@@ -31,7 +31,7 @@ spec:
       validate_mean: 16
       cutover_std_dev: 4
       cutover_mean: 8
-      component_count: 1 #91  
+      component_count: 91  
     - name: "inline"
       code_migrated_std_dev: 2
       code_migrated_mean: 3
@@ -45,7 +45,7 @@ spec:
       validate_mean: 16
       cutover_std_dev: 4
       cutover_mean: 8
-      component_count: 1 #17  
+      component_count: 17  
     - name: "etl"
       code_migrated_std_dev: 2
       code_migrated_mean: 3
@@ -59,9 +59,10 @@ spec:
       validate_mean: 16
       cutover_std_dev: 4
       cutover_mean: 8
-      component_count: 1 #27  
+      component_count: 27  
   offshore_count: 6
-  onshore_count: 3
+  onshore_count: 10
+  time_off: true
 number_of_runs: 1
 output:
   path: ./exploration/offshore/01_initial_look/output/cashier_1000_10.output

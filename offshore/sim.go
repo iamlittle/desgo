@@ -24,11 +24,11 @@ func RunSim(config *SimConfig) *Stats {
 	}
 	heap.Init(&pendingEventSet)
 	for i := 0; i < config.Spec.OnshoreResourceCount; i++ {
-		resource := NewResource(0, Onshore, &pendingEventSet, &migration, &stats)
+		resource := NewResource(0, Onshore, config.Spec.TimeOff, &pendingEventSet, &migration, &stats)
 		migration.NotifyResourceAvailable(&resource, 0)
 	}
 	for i := 0; i < config.Spec.OffshoreResourceCount; i++ {
-		resource := NewResource(0, Offshore, &pendingEventSet, &migration, &stats)
+		resource := NewResource(0, Offshore, config.Spec.TimeOff, &pendingEventSet, &migration, &stats)
 		migration.NotifyResourceAvailable(&resource, 0)
 	}
 	stats.WarmedUp = true

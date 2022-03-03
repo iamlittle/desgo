@@ -23,6 +23,7 @@ type SimConfig struct {
 		Configs               []StatsConfig `yaml:"statsconfig"`
 		OnshoreResourceCount  int           `yaml:"onshore_count"`
 		OffshoreResourceCount int           `yaml:"offshore_count"`
+		TimeOff               bool          `yaml:"time_off"`
 	} `yaml:"spec"`
 	Output struct {
 		Path string `yaml:"path"`
